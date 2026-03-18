@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+*.so
+wandb/
+results/
+*.egg-info/
+.env
+report/
+experiments/smoke_test.py
+experiments/run_all.sh

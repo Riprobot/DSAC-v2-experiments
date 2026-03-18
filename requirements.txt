@@ -1,0 +1,11 @@
+# Python 3.10 venv
+gym==0.25.2
+mujoco==2.3.3
+mujoco-py==2.1.2.14
+Cython<3
+numpy<2.0
+torch>=2.0.0
+wandb>=0.15.0
+tensorboard>=2.5.0
+pandas>=2.0.0
+imageio>=2.0.0
