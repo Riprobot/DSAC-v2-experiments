@@ -18,20 +18,23 @@ from utils.init_args import init_args
 
 class WandbWriter(SummaryWriter):
     """SummaryWriter that also sends every scalar to wandb.
-    Skips tags where step != iteration (replay-sample/time axes)."""
+    Skips tags where step != iteration (replay-sample/time axes).
+    Renames tags to match old wandb format."""
     _SKIP = {"Evaluation/2.", "Evaluation/3.", "Evaluation/4."}
+    _RENAME = {"Evaluation/1. TAR-RL iter": "eval/mean_return"}
 
     def add_scalar(self, tag, value, global_step=None, **kw):
         super().add_scalar(tag, value, global_step, **kw)
         if not any(tag.startswith(s) for s in self._SKIP):
-            wandb.log({tag: value}, step=global_step)
+            wtag = self._RENAME.get(tag, tag.replace("/", "_").replace("-", "_"))
+            wandb.log({wtag: value}, step=global_step)
 
 
 def build_args(env_id, algorithm="DSAC_V2", seed=42,
                max_iteration=100_000, **overrides):
     args = dict(
         env_id=env_id, algorithm=algorithm, seed=seed,
-        enable_cuda=False, trainer="off_serial_trainer", action_type="continu",
+        enable_cuda=True, trainer="off_serial_trainer", action_type="continu",
         value_func_name="ActionValueDistri", value_func_type="MLP",
         value_hidden_sizes=[256, 256, 256], value_hidden_activation="gelu",
         value_output_activation="linear", value_min_log_std=-8, value_max_log_std=8,
